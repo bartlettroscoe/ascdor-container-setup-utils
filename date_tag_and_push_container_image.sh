@@ -30,22 +30,31 @@ else
   COMMAND_ECHO_PREFIX=
 fi
 
+# Assert inputs image_name:image_tag has ":"
+[[ "$image_and_tag" == *:* ]] || {
+  echo "ERROR: image string has no ':' tag separator" >&2
+  exit 1
+}
+
 # Image name and tags
 image_name=$(echo "${image_and_tag}" | sed 's#.*/##; s/:.*//')
 #echo "image_name = $image_name"
+image_tag="${image_and_tag##*:}"
+#echo "image_tag = $image_tag"
 date_tag=$(date +%Y-%m-%d)
 image_and_date_tag=${image_name}:${date_tag}
 #echo "image_and_date_tag = $image_and_date_tag"
 
+# Put on the local data tag
 echo "Tagging ${image_and_date_tag}"
 ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${image_and_date_tag}
 
 if [[ "${remote_prefix}" != "" ]] ; then
   remote_prefix_image_name=${remote_prefix}/${image_name}
   echo "Tagging ${remote_prefix_image_name}:latest"
-  ${COMMAND_ECHO_PREFIX} docker tag ${DERIVED_IMAGE} ${remote_prefix_image_name}:latest
+  ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${remote_prefix_image_name}:latest
   echo "Tagging ${remote_prefix_image_name}:${date_tag}"
-  ${COMMAND_ECHO_PREFIX} docker tag ${DERIVED_IMAGE} ${remote_prefix_image_name}:${date_tag}
+  ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${remote_prefix_image_name}:${date_tag}
   if [[ "${push_prefix}" == "push" ]] ; then
     echo "Pushing ${remote_prefix_image_name}:latest"
     ${COMMAND_ECHO_PREFIX} docker push ${remote_prefix_image_name}:latest
