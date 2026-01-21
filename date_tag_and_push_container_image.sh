@@ -26,6 +26,7 @@ push_prefix=$1; shift
 # Dry run?
 if [[ "${BUILD_CONTAINER_DRY_RUN}" == "1" ]] ; then
   COMMAND_ECHO_PREFIX=echo
+
 else
   COMMAND_ECHO_PREFIX=
 fi
@@ -45,19 +46,20 @@ date_tag=$(date +%Y-%m-%d)
 image_and_date_tag=${image_name}:${date_tag}
 #echo "image_and_date_tag = $image_and_date_tag"
 
-# Put on the local data tag
+# Put on the local date tag
 echo "Tagging ${image_and_date_tag}"
 ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${image_and_date_tag}
 
+# Put on matching remote tags
 if [[ "${remote_prefix}" != "" ]] ; then
   remote_prefix_image_name=${remote_prefix}/${image_name}
-  echo "Tagging ${remote_prefix_image_name}:latest"
-  ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${remote_prefix_image_name}:latest
+  echo "Tagging ${remote_prefix_image_name}:${image_tag}"
+  ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${remote_prefix_image_name}:${image_tag}
   echo "Tagging ${remote_prefix_image_name}:${date_tag}"
   ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${remote_prefix_image_name}:${date_tag}
   if [[ "${push_prefix}" == "push" ]] ; then
-    echo "Pushing ${remote_prefix_image_name}:latest"
-    ${COMMAND_ECHO_PREFIX} docker push ${remote_prefix_image_name}:latest
+    echo "Pushing ${remote_prefix_image_name}:${image_tag}"
+    ${COMMAND_ECHO_PREFIX} docker push ${remote_prefix_image_name}:${image_tag}
     echo "Pushing ${remote_prefix_image_name}:${date_tag}"
     ${COMMAND_ECHO_PREFIX} docker push ${remote_prefix_image_name}:${date_tag}
   fi
