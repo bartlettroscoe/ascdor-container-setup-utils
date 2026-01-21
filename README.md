@@ -23,7 +23,7 @@ host filesystem.
 This repo is intended to be cloned under a base repo `<personal-home-dir-setup>`
 that contains your personal bash environment setup for a local machine (for
 example, `~/rab_home_dir_setup/` for @bartlettroscoe, which results in
-`~/rab_home_dir_setup/container_env_setup`).
+`~/rab_home_dir_setup/ascdor-container-setup-utils`).
 
 When running the container, mount the base directory `<personal-home-dir-setup>`
 read-only with `docker run` (or `podman run`) by adding:
@@ -48,7 +48,7 @@ Once inside the container as the matching user, run:
 
 ```bash
 cd ~
-/mounted_from_host/<personal-home-dir-setup>/container_env_setup/setup_home_dir_env.sh
+/mounted_from_host/<personal-home-dir-setup>/ascdor-container-setup-utils/setup_home_dir_env.sh
 . .bash_profile
 ```
 
@@ -66,7 +66,7 @@ If you prefer this route, once in the container as `root`, set up a local user
 with the same UID and GID as the host user using:
 
 ```bash
-/mounted_from_host/<personal-home-dir-setup>/container_env_setup/setup_container_as_local_uid_gid.sh
+/mounted_from_host/<personal-home-dir-setup>/ascdor-container-setup-utils/setup_container_as_local_uid_gid.sh
 ```
 
 That script will create a new user with the same name as the host user or use
@@ -87,7 +87,7 @@ the local user's `~/.bashrc` is sourced when starting the new shell.
 Once you are the local user, set up the home directory environment with:
 
 ```bash
-./<personal-home-dir-setup>/container_env_setup/setup_home_dir_env.sh
+./<personal-home-dir-setup>/ascdor-container-setup-utils/setup_home_dir_env.sh
 ```
 
 After that, the local user's `~/.bash_profile` will load the custom
@@ -138,7 +138,7 @@ tool  inside the container, run:
 
 ```bash
 cd <base-git-repo>/
-~/<personal-home-dir-setup>/container_env_setup/gitdist_make_safe_repos.sh
+~/<personal-home-dir-setup>/ascdor-container-setup-utils/gitdist_make_safe_repos.sh
 ```
 
 NOTE: That script modifies the (container) global `~/.gitconfig` file.  But that

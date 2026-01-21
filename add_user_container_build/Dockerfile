@@ -2,7 +2,7 @@
 # opens up permissions from another directory in the container that needs to be
 # accessed by this new user.
 #
-#   cd container_env_setup/
+#   cd ascdor-container-setup-utils/
 #   docker build [options] -f add_user_container_build/Dockerfile .
 #
 # See the README.md file in this directory for further instructions.

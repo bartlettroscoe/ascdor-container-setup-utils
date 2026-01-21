@@ -2,10 +2,10 @@
 
 To build a derived container that adds a user to the container that matches the
 UID and GID of the host user, and starts the container as that new user, first
-CD to the base repo `container_env_setup` as:
+CD to the base repo `ascdor-container-setup-utils` as:
 
 ```bash
-cd container_env_setup/
+cd ascdor-container-setup-utils/
 ```
 
 then do the `docker build` (for example with the base image
