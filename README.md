@@ -3,7 +3,8 @@
 This repository contains instructions and scripts for setting up a development
 environment inside a container so it can run as a local user with the same UID
 and GID as the host user. This is useful on systems where the host user's
-UID:GID are not mapped to 0:0 (root) inside the container.
+UID:GID are not mapped to 0:0 (root) inside the container.  It also contains
+other utilities as well (see below table of contents).
 
 Adding a user inside the container with the same UID and GID ensures files
 created or modified inside the container remain owned by the host user on the
@@ -20,10 +21,10 @@ host filesystem.
 
 ## Mount into docker container
 
-This repo is intended to be cloned under a base repo `<personal-home-dir-setup>`
-that contains your personal bash environment setup for a local machine (for
-example, `~/rab_home_dir_setup/` for @bartlettroscoe, which results in
-`~/rab_home_dir_setup/ascdor-container-setup-utils`).
+This can be cloned under a base repo `<personal-home-dir-setup>` that contains
+your personal bash environment setup for a local machine (for example,
+`~/<personal-home-dir-setup>/` for Roscoe A. Bartlett, which results in
+`~/<personal-home-dir-setup>/ascdor-container-setup-utils`).
 
 When running the container, mount the base directory `<personal-home-dir-setup>`
 read-only with `docker run` (or `podman run`) by adding:
@@ -32,8 +33,8 @@ read-only with `docker run` (or `podman run`) by adding:
   -v /home/<user-name>/<personal-home-dir-setup>:/mounted_from_host/<personal-home-dir-setup>:ro
 ```
 
-(for example, `<personal-home-dir-setup>` = `rab_home_dir_setup` for
-@bartlettroscoe)
+For example, `<personal-home-dir-setup>` = `rab_home_dir_setup` for Roscoe A.
+Bartlett (rabartl@sandia.gov).
 
 This allows you to set up your custom bash environment from inside the
 container.
@@ -60,7 +61,9 @@ matches the host user's UID and GID.
 Instead of building a derived container with a matching user, you can run a
 container as `root` and create a new user with the host user's UID and GID
 inside the running container. This requires additional setup when launching the
-container and is therefore not recommended in most cases.
+container and is therefore not recommended in most cases.  Also, this is not as
+secure as creating a non-sudo non-root user in a derived container and running
+the container as that non-root user.
 
 If you prefer this route, once in the container as `root`, set up a local user
 with the same UID and GID as the host user using:
@@ -108,24 +111,26 @@ push the remote-tagged image(s) as:
   [<remote-prefix> [<push-prefix>]]
 ```
 
-For example, to add a date tag, remote tags, and push the remote-tagged
-images for `my-container:latest`, run:
+For example, to add a date tag, remote tags, and push the remote-tagged images
+for `my-container:v0.2.1` for account `<remote-prefix>` on the target remote
+(which you must have logged into before), run:
 
 ```bash
-<this-dir>/date_tag_and_push_container_image.sh my-container:latest \
-  bartlettroscoe push
+<this-dir>/date_tag_and_push_container_image.sh my-container:v0.2.1 \
+  <remote-prefix> push
 ```
 
 This creates the following image tags with `docker tag`:
 
 - `my-container:<YYYY>-<MM>-<DD>`
-- `bartlettroscoe/my-container:latest`
-- `bartlettroscoe/my-container:<YYYY>-<MM>-<DD>`
+- `<remote-prefix>/my-container:v0.2.1`
+- `<remote-prefix>/my-container:<YYYY>-<MM>-<DD>`
 
-and pushes the latter two images with `docker push` when the `push` option is passed into the script.
+and pushes the latter two images with `docker push` when the `push` option is
+passed into the script.
 
-NOTE: Make sure you create the container repositories on hub.docker.com (or
-your chosen registry) before pushing.
+NOTE: Make sure you create the destination container repositories before
+pushing.
 
 ## Allow Git operations on mounted git repos for root user
 
@@ -134,7 +139,7 @@ matching user in the container, you may need to tweak the usage of Git inside
 the container. To make mounted git repositories safe for operations by `root`
 and optionally to work with [TriBITS
 `gitdist`](https://tribitspub.github.io/TriBITS/users_guide/index.html#gitdist-documentation)
-tool  inside the container, run:
+tool inside the container, run:
 
 ```bash
 cd <base-git-repo>/
@@ -143,4 +148,4 @@ cd <base-git-repo>/
 
 NOTE: That script modifies the (container) global `~/.gitconfig` file.  But that
 file is a copy in the container (created by `setup_home_dir_env.sh`), so
-modifications are harmless to the host.
+modifications are harmless and don't impact the host.
