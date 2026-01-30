@@ -33,7 +33,7 @@ read-only with `docker run` (or `podman run`) by adding:
   -v /home/<user-name>/<personal-home-dir-setup>:/mounted_from_host/<personal-home-dir-setup>:ro
 ```
 
-For example, `<personal-home-dir-setup>` = `rab_home_dir_setup` for Roscoe A.
+For example, `<personal-home-dir-setup>` = `rab-home-dir-setup` for Roscoe A.
 Bartlett (rabartl@sandia.gov).
 
 This allows you to set up your custom bash environment from inside the
