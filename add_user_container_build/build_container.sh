@@ -37,11 +37,14 @@ fi
 
 base_image_name=${base_image_and_tag%%:*}
 #echo "base_image_name = $base_image_name"
+base_image_tag="${base_image_and_tag##*:}"
+#echo "image_tag = $image_tag"
 derived_image_name=${base_image_name}-${new_username}
 #echo "derived_image_name = $derived_image_name"
 date_tag=$(date +%Y-%m-%d)
-derived_image_and_tag=${derived_image_name}:latest
+derived_image_and_tag=${derived_image_name}:${base_image_tag}
 derived_image_and_date_tag=${derived_image_name}:${date_tag}
+derived_image_and_latest_tag=${derived_image_name}:latest
 
 export BASE_IMAGE=${base_image_and_tag} \
 && export NEW_USERNAME=${new_username} \
@@ -62,4 +65,8 @@ export BASE_IMAGE=${base_image_and_tag} \
 
 echo "Tagging ${derived_image_and_date_tag}"
 ${COMMAND_ECHO_PREFIX} docker tag ${DERIVED_IMAGE} ${derived_image_and_date_tag}
+
+echo "Tagging ${derived_image_and_latest_tag}"
+${COMMAND_ECHO_PREFIX} docker tag ${DERIVED_IMAGE} ${derived_image_and_latest_tag}
+
 echo "Done building and tagging: ${derived_image_name}"
