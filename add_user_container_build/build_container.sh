@@ -12,13 +12,15 @@
 #
 
 # Input command-line args
-base_image_and_tag=$1; shift
+full_base_image_and_tag=$1; shift
+#echo "full_base_image_and_tag = '$full_base_image_and_tag'"
 new_username=$1; shift
+#echo "new_username = '$new_username'"
 
 SCRIPT_BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -L)"
 cd $(realpath "${SCRIPT_BASE_DIR}/..")
 
-if [[ "${base_image_and_tag}" == "" ]] ; then
+if [[ "${full_base_image_and_tag}" == "" ]] ; then
   echo "Missing <base-image-name>:<base-image-tag>"
   exit 1
 fi
@@ -35,18 +37,22 @@ else
   COMMAND_ECHO_PREFIX=
 fi
 
-base_image_name=${base_image_and_tag%%:*}
-#echo "base_image_name = $base_image_name"
-base_image_tag="${base_image_and_tag##*:}"
-#echo "image_tag = $image_tag"
+base_image_name=$(\
+  ${SCRIPT_BASE_DIR}/../extract_image_basename_from_image_and_tag.sh ${full_base_image_and_tag})
+#echo "base_image_name = '$base_image_name'"
+base_image_tag=$(\
+  ${SCRIPT_BASE_DIR}/../extract_image_tag_from_image_and_tag.sh ${full_base_image_and_tag})
+#echo "base_image_tag = '$base_image_tag'"
+base_image_name_and_tag=${base_image_name}:${base_image_tag}
+#echo "base_image_name_and_tag = '$base_image_name_and_tag'"
 derived_image_name=${base_image_name}-${new_username}
-#echo "derived_image_name = $derived_image_name"
+#echo "derived_image_name = '$derived_image_name'"
 date_tag=$(date +%Y-%m-%d)
 derived_image_and_tag=${derived_image_name}:${base_image_tag}
 derived_image_and_date_tag=${derived_image_name}:${date_tag}
 derived_image_and_latest_tag=${derived_image_name}:latest
 
-export BASE_IMAGE=${base_image_and_tag} \
+export BASE_IMAGE=${full_base_image_and_tag} \
 && export NEW_USERNAME=${new_username} \
 && export HOST_UID=$(id -u) \
 && export HOST_GID=$(id -g) \
