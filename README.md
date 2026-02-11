@@ -112,9 +112,9 @@ push the remote-tagged image(s) as:
   [<remote-prefix> [<push-prefix>]]
 ```
 
-For example, to add a date tag, remote tags, and push the remote-tagged images
-for `my-container:v0.2.1` for account `<remote-prefix>` on the target remote
-(which you must have logged into before), run:
+For example, to add a date tag for the current date, remote tags, and push the
+remote-tagged images for `my-container:v0.2.1` for account `<remote-prefix>` on
+the target remote (which you must have logged into before), run:
 
 ```bash
 <this-dir>/date_tag_and_push_container_image.sh my-container:v0.2.1 \
@@ -129,6 +129,10 @@ This creates the following image tags with `docker tag`:
 
 and pushes the latter two images with `docker push` when the `push` option is
 passed into the script.
+
+NOTE: If an existing matching image with the same image ID exists with an older
+date tag exists, the older date tag will be used.  (That way, we only updated
+the date tag if the image was actually rebuilt from a previous date.)
 
 NOTE: Make sure you create the destination container repositories before
 pushing.

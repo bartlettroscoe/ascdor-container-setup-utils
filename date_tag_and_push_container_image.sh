@@ -6,7 +6,11 @@
 #     [<remote-prefix> [<push-prefix>]]
 #
 # Creates the tag:
+#
 #    <image-name>:<YYYY>-<MM>-<DD>
+#
+# if there is not already an exiting image with the same image ID with an
+# exiting date tag.
 #
 # If <remote-prefix> != "", then the following remote prefixed tags are created:
 #   <remote-prefix>/<image-name>:<image-tag>
@@ -23,6 +27,8 @@ remote_prefix=$1; shift
 push_prefix=$1; shift
 #echo "push_prefix = $push_prefix"
 
+SCRIPT_BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -L)"
+
 # Dry run?
 if [[ "${BUILD_CONTAINER_DRY_RUN}" == "1" ]] ; then
   COMMAND_ECHO_PREFIX=echo
@@ -37,18 +43,45 @@ fi
   exit 1
 }
 
-# Image name and tags
-image_name=$(echo "${image_and_tag}" | sed 's#.*/##; s/:.*//')
+# Image name, tag, and ID for input <image-name>:<image-tag>
+image_name=$(${SCRIPT_BASE_DIR}/extract_image_basename_from_image_and_tag.sh ${image_and_tag})
 #echo "image_name = $image_name"
-image_tag="${image_and_tag##*:}"
+image_tag=$(${SCRIPT_BASE_DIR}/extract_image_tag_from_image_and_tag.sh ${image_and_tag})
 #echo "image_tag = $image_tag"
-date_tag=$(date +%Y-%m-%d)
-image_and_date_tag=${image_name}:${date_tag}
-#echo "image_and_date_tag = $image_and_date_tag"
+image_id=$(${SCRIPT_BASE_DIR}/get_image_id_given_name_and_tag.sh ${image_and_tag})
+#echo "image_id = $image_id"
+
+# Candidate image and today date tag
+today_date_tag=$(date +%Y-%m-%d)
+#echo "today_date_tag = $today_date_tag"
+
+# Get the date tag of the most recent image with the same image base name
+most_recent_image_name_and_date_tag=$(${SCRIPT_BASE_DIR}/get_most_recent_matching_image_and_tag.sh \
+ "${image_name}:[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+#echo "most_recent_image_and_date_tag = $most_recent_image_name_and_date_tag"
+most_recent_image_date_tag=$(${SCRIPT_BASE_DIR}/extract_image_tag_from_image_and_tag.sh \
+  ${most_recent_image_name_and_date_tag})
+#echo "most_recent_image_date_tag = $most_recent_image_date_tag"
+most_recent_image_date_tag_id=$(${SCRIPT_BASE_DIR}/get_image_id_given_name_and_tag.sh \
+  ${most_recent_image_name_and_date_tag})
+#echo "most_recent_image_id = $most_recent_image_date_tag_id"
 
 # Put on the local date tag
-echo "Tagging ${image_and_date_tag}"
-${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${image_and_date_tag}
+if [[ "${image_id}" == "${most_recent_image_date_tag_id}" ]] ; then
+  echo "NOTE: Image '${image_and_tag}' with ID '${most_recent_image_date_tag_id}' matches the image ID with a date tag '${most_recent_image_date_tag}' so will use the previous date tag '${most_recent_image_date_tag}'"
+  date_tag=${most_recent_image_date_tag}
+else
+  date_tag=${today_date_tag}
+fi
+#echo "date_tag = $date_tag"
+
+# Tag the image with today's date tag if image ID has been updated
+if [[ "${image_id}" != "${most_recent_image_date_tag_id}" ]] ; then
+  image_and_date_tag=${image_name}:${date_tag}
+  echo "image_and_date_tag = $image_and_date_tag"
+  echo "Tagging ${image_and_date_tag}"
+  ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${image_and_date_tag}
+fi
 
 # Put on matching remote tags
 if [[ "${remote_prefix}" != "" ]] ; then
