@@ -17,6 +17,7 @@ host filesystem.
   - [Build a derived container that adds a local user matching the host user UID and GID](#build-a-derived-container-that-adds-a-local-user-matching-the-host-user-uid-and-gid)
   - [Add a local user matching the host user UID and GID in a running container](#add-a-local-user-matching-the-host-user-uid-and-gid-in-a-running-container)
   - [Date tag and optionally remote tag and push a container image](#date-tag-and-optionally-remote-tag-and-push-a-container-image)
+  - [Container image information helper scripts](#container-image-information-helper-scripts)
   - [Allow Git operations on mounted git repos for root user](#allow-git-operations-on-mounted-git-repos-for-root-user)
 
 ## Mount into docker container
@@ -131,6 +132,21 @@ passed into the script.
 
 NOTE: Make sure you create the destination container repositories before
 pushing.
+
+## Container image information helper scripts
+
+This repository contains a number of helper scripts:
+
+- [get_most_recent_matching_image_and_tag.sh](./get_most_recent_matching_image_and_tag.sh) `<image-and-tag-regex>`
+  - Get the most recent `<full-image-name>:<tag>` matching a given image name pattern, taking into account possible prefixes that are not included in the image name pattern.
+  - Get the most recent `<image-name>:<tag>` that matches the input regex, removing any prefixes separated with `/`. (E.g., `trilinos-clang-19.1.6-openmpi-4.1.6:latest` or `trilinos-clang*:latest`.)
+  - This gets used to determine the most recent built container for a given name and tag.
+- [get_image_id_given_name_and_tag.sh](./get_image_id_given_name_and_tag.sh) `<image-name>:<image-tag>`
+  - Get the container image ID given a container `<image-name>:<image-tag>`.
+- [extract_image_basename_from_image_and_tag.sh](./extract_image_basename_from_image_and_tag.sh) `<image-name>:<image-tag>`
+  - Extract the image base name minus prefixes from an input `<image-name>:<image-tag>`.
+- [extract_image_tag_from_image_and_tag.sh](./extract_image_tag_from_image_and_tag.sh) `<image-name>:<image-tag>`
+  - Extract the image tag from `<image-name>:<image-tag>` taking into account possible ':' in the prefixes of the image name.
 
 ## Allow Git operations on mounted git repos for root user
 
