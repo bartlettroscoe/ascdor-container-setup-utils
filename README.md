@@ -137,6 +137,31 @@ the date tag if the image was actually rebuilt from a previous date.)
 NOTE: Make sure you create the destination container repositories before
 pushing.
 
+Also, this script can write the most recent matching image to a file so the
+caller can access that information.  That can be done by setting the env var:
+
+```bash
+export WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE=<file-path>
+```
+
+and then the full image and tag can be read using:
+
+```bash
+image_and_tag=$(cat "${WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE}")
+```
+
+Creating and destroying a temp file can be automated using the functions using:
+
+```bash
+source <this-dir>/write_generated_image_name_and_tag_file_setup.sh
+write_generated_image_name_and_tag_file_setup
+<this-dir>/date_tag_and_push_container_image.sh [args]
+full_image_and_tag=$(write_generated_image_name_and_tag_file_extract)
+export WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE=
+```
+
+This solves several problems in workflows involving stacked containers.
+
 ## Container image information helper scripts
 
 This repository contains a number of helper scripts:
