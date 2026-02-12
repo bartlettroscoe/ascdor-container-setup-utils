@@ -95,7 +95,7 @@ fi
 if [[ "${WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE}" != "" ]] ; then
   full_image_and_tag=$(${SCRIPT_BASE_DIR}/get_most_recent_matching_image_and_tag.sh \
     "${image_and_tag}$")
-  echo "Writing '${full_image_and_tag}' to file '${WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE}'"
+  echo "Writing '${full_image_and_tag}' to file WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE='${WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE}'"
   echo -n "${full_image_and_tag}" > ${WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE}
 fi
 
