@@ -69,10 +69,9 @@ export BASE_IMAGE=${full_base_image_and_tag} \
   -f add_user_container_build/Dockerfile . \
   || exit $?
 
-echo "Tagging ${derived_image_and_date_tag}"
-${COMMAND_ECHO_PREFIX} docker tag ${DERIVED_IMAGE} ${derived_image_and_date_tag}
+${SCRIPT_BASE_DIR}/../date_tag_and_push_container_image.sh ${derived_image_and_tag}
 
 echo "Tagging ${derived_image_and_latest_tag}"
-${COMMAND_ECHO_PREFIX} docker tag ${DERIVED_IMAGE} ${derived_image_and_latest_tag}
+${COMMAND_ECHO_PREFIX} docker tag ${derived_image_and_tag} ${derived_image_and_latest_tag}
 
 echo "Done building and tagging: ${derived_image_name}"
