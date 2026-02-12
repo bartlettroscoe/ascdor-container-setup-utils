@@ -18,6 +18,14 @@
 #
 # If <push-prefix> == "push", then the remote-prefixed tags are pushed.
 #
+# In addition, this will write a file that gives <image-name>:<image-tag> by
+# setting the env var:
+#
+#    export WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE=<file-path>
+#
+# On the completion of this script, the file at <file-path> will contain the
+# most recent full image name and tag.
+#
 
 # Input command-line args
 image_and_tag=$1; shift
@@ -81,6 +89,14 @@ if [[ "${image_id}" != "${most_recent_image_date_tag_id}" ]] ; then
   echo "image_and_date_tag = $image_and_date_tag"
   echo "Tagging ${image_and_date_tag}"
   ${COMMAND_ECHO_PREFIX} docker tag ${image_and_tag} ${image_and_date_tag}
+fi
+
+# Write the full image name and tag to the file
+if [[ "${WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE}" != "" ]] ; then
+  full_image_and_tag=$(${SCRIPT_BASE_DIR}/get_most_recent_matching_image_and_tag.sh \
+    "${image_and_tag}$")
+  echo "Writing '${full_image_and_tag}' to file '${WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE}'"
+  echo -n "${full_image_and_tag}" > ${WRITE_GENERATED_IMAGE_NAME_AND_TAG_TO_FILE}
 fi
 
 # Put on matching remote tags
