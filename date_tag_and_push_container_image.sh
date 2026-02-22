@@ -79,9 +79,9 @@ most_recent_image_with_a_date_tag_date_tagmost_recent_image_with_a_date_tag_id=$
 
 # Put on the local date tag
 if [[ "${image_base_name}" == "${most_recent_image_base_name_with_a_date_tag}" ]] \
-     && [[ "${image_id}" == "${most_recent_image_with_a_date_tag_date_tagmost_recent_image_with_a_date_tag_id}" ]] \
-     && [[ "${today_date_tag}" != "${most_recent_image_with_a_date_tag_date_tag}" ]] ; then
-  echo "NOTE: Image '${image_and_tag}' with ID '${most_recent_image_with_a_date_tag_date_tagmost_recent_image_with_a_date_tag_id}' matches the ID previous image '${most_recent_image_base_name_with_a_date_tag}', so will use the the older date tag '${most_recent_image_with_a_date_tag_date_tag}'"
+    && [[ "${image_id}" == "${most_recent_image_with_a_date_tag_date_tagmost_recent_image_with_a_date_tag_id}" ]] \
+    ; then
+  echo "NOTE: Image '${image_and_tag}' with ID '${most_recent_image_with_a_date_tag_date_tagmost_recent_image_with_a_date_tag_id}' matches the ID previous image '${most_recent_image_base_name_with_a_date_tag}', so will use the previous date tag '${most_recent_image_with_a_date_tag_date_tag}'"
   date_tag=${most_recent_image_with_a_date_tag_date_tag}
   apply_date_tag=0
 else
