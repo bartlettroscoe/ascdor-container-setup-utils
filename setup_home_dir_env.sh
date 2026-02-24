@@ -9,7 +9,7 @@
 
 SCRIPT_BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ "{SCRIPT_BASE_DIR}" == "${PWD}" ]] ; then
+if [[ "${SCRIPT_BASE_DIR}" == "${PWD}" ]] ; then
   echo "ERROR: Can't run form this dir!  Run from home dir in container (e.g. /root or /home/<user>)!"
   exit 1
 fi
