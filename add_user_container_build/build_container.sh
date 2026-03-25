@@ -4,7 +4,9 @@
 # user:
 #
 #   <this-dir>/add_user_container_build/build_container.sh \
-#     <base-image-name>:<base-image-tag> <new-username>
+#     <base-image-name>:<base-image-tag> [<new-username>]
+#
+# If <new-username> is not provided, it defaults to the current host username `$(id -un)`.
 #
 # To only do a dry-run and see what commands would be called, set the env var:
 #
@@ -15,6 +17,9 @@
 full_base_image_and_tag=$1; shift
 #echo "full_base_image_and_tag = '$full_base_image_and_tag'"
 new_username=$1; shift
+if [[ "${new_username}" == "" ]] ; then
+  new_username=$(id -un)
+fi
 #echo "new_username = '$new_username'"
 
 SCRIPT_BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd -L)"

@@ -47,6 +47,8 @@ which creates the image
 `codex-mull-trilinos-clang-19.1.6-openmpi-4.1.6-${USER}:latest` and also adds
 the date tag `<YYYY>-<MM>-<DD>` for the generated image.
 
+NOTE: If the user name is not passed in, it defaults to `$(id -un)`.
+
 NOTE: If there is already a user `<existing-user>` in the base image that
 matches the UID and GID of the host user `${USER}`, then use that user name
 `<existing-user>` instead of `${USER}` above.  In this case, the only effect
